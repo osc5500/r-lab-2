@@ -10,7 +10,7 @@ format:
       embed-resources: true
       theme: flatly
       code-block-bg: true
-      code-block-border-left: "#31BAE9"
+      code-block-border-left: "#3ABFC0"
       highlight-style: printing
 execute:
     message: false
@@ -47,21 +47,27 @@ The basic structure of a ggplot call is to first call the ggplot function and th
 
 ### mtcars | weight vs. miles per gallon
 
-In this example,we have a basic `ggplot` call with data and aesthetic mappings in the `ggplot` function.
+In this example,we have a basic `ggplot` call with data and aesthetic mappings in the `ggplot` function. We then add `geom_point` to create a scatterplot.
 ```{r scatter}
 ggplot(mtcars,aes(x = wt,y = mpg)) +
     geom_point()
 ```
 
 ### heightweight | height vs. age  
+Now we'll work with another data set that provides information on heigt and weight.
+
 * df.heightweight is an object of type tibble
 * it has 236 observations and 5 variables
 * variables have different types themselves,which constrain how we can visualize them effectively
 
+
 ```{r hw,message=FALSE}
 df.heightweight <- read_csv(here('_data','heightweight.csv'))
 df.heightweight
+```
 
+In this first example, we again create a scatterplot using `geom_point`. Note that we are setting up the aesthetic mapping (`aes`) in the top-level `ggplot` function.
+```{r hw-scatter}
 ggplot(df.heightweight,aes(x = ageYear,y = heightIn)) + 
   geom_point()
 ```
@@ -69,11 +75,11 @@ ggplot(df.heightweight,aes(x = ageYear,y = heightIn)) +
 * In summary: Our objective is similar to that in the previous example.  However,we are using a different dataset (heightweight) and are interested in the relationship between height and age.
 
 ### heightweight | height vs. age by gender
-In this example,we add the 'color' aesthetic to the chart. You can see that `ggplot` automatically recognizes the different levels in the 'sex' variable and colors them differently.
+In this example,we add the 'color' aesthetic to the chart. You can see that `ggplot` automatically recognizes the different levels in the 'sex' variable and colors them differently. We also move the aesthetic mapping into the call to `geom_point`. This is an example of how we can control the chart. By putting the aesthetic mapping in the geometric object, it will be specific to that geometric object. When creating more sophisticated charts, you can have multiple geometric objects all with different aesthetic mappings (and even different data sets, but we're getting ahead of ourselves).
 
 ```{r hw3}
-ggplot(df.heightweight,aes(x = ageYear,y = heightIn,colour = sex)) +  
-  geom_point()
+ggplot(df.heightweight) +  
+  geom_point(aes(x = ageYear,y = heightIn,colour = sex))
 ```
 
 If we want a simple bar chart showing the average height by sex,we first pre-process the data calculating the average we want and then use `geom_col`.
@@ -87,13 +93,82 @@ ggplot(by_sex) +
   geom_col(aes(x=sex,y=mean_height))
 ```
 
-Not a super helpful chart,but it illustrates how to make a bar chart. We could also look at a boxplot for the same data to look at the distribution of values. In this example,we dress up the chart a little with some color and an added theme to make it look a little cleaner.
+We could also look at a boxplot for the same data to look at the distribution of values. Notice that we are using the `fill` parameter to specify the background color for the boxes.
 
 ```{r hw_col2}
-ggplot(df.heightweight) +                          # specify the data set
-  geom_boxplot(aes(x=sex,y=heightIn,fill=sex)) +   # setup a box plot with aesthetic mappings
-  theme_bw() +                                     # use a different theme
-  labs(x='Sex',y='Height (in)') +                  # add labels to x and y axes
-  theme(legend.position='none')                    # remove the legend
+ggplot(df.heightweight) +                          
+  geom_boxplot(aes(x=sex,y=heightIn,fill=sex)) 
 ```
 
+:::{.callout-note}
+The difference between these charts is the geometric object we are using. All chart-type decisions in `ggplot` are made by selecting different geometric objects. A list of geometric objects can be found [here](https://ggplot2.tidyverse.org/reference/#geoms).
+:::
+
+We can also use `fill` to control the background color for barplots. If we revisit the plot we created earlier, we can see how the background color is added via `fill`.
+
+```{r hw_col-color}
+ggplot(by_sex) +
+  geom_col(aes(x=sex,y=mean_height,fill=sex))
+```
+
+## Additional chart options
+
+### Labels
+
+As mentioned, nearly all of the chart can be customized using `ggplot`. We will cover two of those before we finish here.
+
+First, we'll cover the `labs` function. This function allows you to add labels to a chart. For an example, we will go back to our height/weight data and will add labels to the scatterplot. These are the main labels that can be added to a chart. Labels can be added to the content of the chart via a geometric object (not covered here).
+
+```{r hw3-labs}
+ggplot(df.heightweight) +  
+	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
+	labs(x='Age (Years)',y='Height (In)',colour='Sex',
+		 title='Height Increases with Age',
+		 subtitle='This is a subtitle',
+		 caption='This is a caption')
+```
+
+### Themes
+
+We can also control the overall look and feel of the chart with `theme` functions. The individual elements of the theme can also be adjusted, but we won't cover that here. So far, we've seen charts using the default theme which is called `theme_gray`. We'll show a few of the other themes.
+
+`theme_bw`
+
+```{r hw3-bw}
+ggplot(df.heightweight) +  
+	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
+	labs(x='Age (Years)',y='Height (In)',colour='Sex',
+		 title='Height Increases with Age',
+		 subtitle='This is a subtitle',
+		 caption='This is a caption') +
+	theme_bw()
+```
+
+`theme_classic`
+
+```{r hw3-classic}
+ggplot(df.heightweight) +  
+	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
+	labs(x='Age (Years)',y='Height (In)',colour='Sex',
+		 title='Height Increases with Age',
+		 subtitle='This is a subtitle',
+		 caption='This is a caption') +
+	theme_classic()
+```
+
+`theme_void`
+
+```{r hw3-void}
+ggplot(df.heightweight) +  
+	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
+	labs(x='Age (Years)',y='Height (In)',colour='Sex',
+		 title='Height Increases with Age',
+		 subtitle='This is a subtitle',
+		 caption='This is a caption') +
+	theme_void()
+```
+
+
+## Summary
+
+In this lab, we have seen the basics of how `ggplot` works and looked at a few examples. We see that ggplot works using the concept of layering chart elements on top of each other and allows us to control various elements of the chart. We also see that we may need to pre-aggregate some of our data in order to create the desired chart. For the lab assignment, I'll provide a set of building blocks and then have you put two charts together using those building blocks.
