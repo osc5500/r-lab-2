@@ -1,0 +1,99 @@
+---
+title: "Intro to ggplot"
+author: "Jeremy Morris"
+affiliation-title: "University of Utah"
+date: last-modified
+title-block-style: default
+title-block-banner: "#890000"
+format: 
+  html:
+      embed-resources: true
+      theme: flatly
+      code-block-bg: true
+      code-block-border-left: "#31BAE9"
+      highlight-style: printing
+execute:
+    message: false
+    warning: false
+    error: false
+---
+
+```{r setup}
+#| echo: false
+library(tidyverse)
+library(skimr)
+library(here)
+```
+
+# Introduction to ggplot2
+
+“ggplot()” is the generic function call. A plot can include any of the following objects.
+
+* `ggplot` - the primary building block of a chart. By itself only generates a blank chart.
+* `aes` - short for 'aesthetic mapping'. This function tells the plot how to map data to different portions of the chart (e.g. x-axis,y-axis,fill,etc.)
+* `geom` - short for 'geometric object'. These are the actual charts,a short list of options follows.
+    * `geom_point` - scatterplot
+    * `geom_bar` - bar chart
+    * `geom_line` - line chart
+* `labs` - chart labels and titles
+* `coord` - functions to modify the coordinate space. The most commonly used is `coord_flip` to rotate a chart 90 degrees.
+* `facet` - these control how many charts are shown. We will cover these in more detail in the next lab.
+* `theme` - functions to modify the overall look and feel over the chart.
+
+The great thing about ggplot is that it allows you to control nearly every aspect of a data visualization. Because there is so much control,there is also a learning curve associated with that level of control.
+
+The basic structure of a ggplot call is to first call the ggplot function and then add the different components to the chart. The aesthetic mappings can be added when `ggplot` is called or they can be added in the individual geometric objects. If added in the `ggplot` call,these aesthetic mappings will be used in all `geom` functions. You would add them to the `geom` function if you wanted to override the settings in `ggplot`.
+
+
+### mtcars | weight vs. miles per gallon
+
+In this example,we have a basic `ggplot` call with data and aesthetic mappings in the `ggplot` function.
+```{r scatter}
+ggplot(mtcars,aes(x = wt,y = mpg)) +
+    geom_point()
+```
+
+### heightweight | height vs. age  
+* df.heightweight is an object of type tibble
+* it has 236 observations and 5 variables
+* variables have different types themselves,which constrain how we can visualize them effectively
+
+```{r hw,message=FALSE}
+df.heightweight <- read_csv(here('_data','heightweight.csv'))
+df.heightweight
+
+ggplot(df.heightweight,aes(x = ageYear,y = heightIn)) + 
+  geom_point()
+```
+
+* In summary: Our objective is similar to that in the previous example.  However,we are using a different dataset (heightweight) and are interested in the relationship between height and age.
+
+### heightweight | height vs. age by gender
+In this example,we add the 'color' aesthetic to the chart. You can see that `ggplot` automatically recognizes the different levels in the 'sex' variable and colors them differently.
+
+```{r hw3}
+ggplot(df.heightweight,aes(x = ageYear,y = heightIn,colour = sex)) +  
+  geom_point()
+```
+
+If we want a simple bar chart showing the average height by sex,we first pre-process the data calculating the average we want and then use `geom_col`.
+
+```{r hw_col}
+by_sex <- df.heightweight |> 
+	group_by(sex) |> 
+	summarise(mean_height=mean(heightIn))
+
+ggplot(by_sex) +
+  geom_col(aes(x=sex,y=mean_height))
+```
+
+Not a super helpful chart,but it illustrates how to make a bar chart. We could also look at a boxplot for the same data to look at the distribution of values. In this example,we dress up the chart a little with some color and an added theme to make it look a little cleaner.
+
+```{r hw_col2}
+ggplot(df.heightweight) +                          # specify the data set
+  geom_boxplot(aes(x=sex,y=heightIn,fill=sex)) +   # setup a box plot with aesthetic mappings
+  theme_bw() +                                     # use a different theme
+  labs(x='Sex',y='Height (in)') +                  # add labels to x and y axes
+  theme(legend.position='none')                    # remove the legend
+```
+
