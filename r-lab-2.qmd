@@ -1,5 +1,5 @@
 ---
-title: "Intro to ggplot"
+title: "R Lab 2 | Intro to ggplot"
 author: "Jeremy Morris"
 affiliation-title: "University of Utah"
 date: last-modified

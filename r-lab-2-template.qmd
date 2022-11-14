@@ -1,0 +1,42 @@
+---
+title: "R Lab 2 | Template"
+author: "YOUR NAME GOES HERE"
+affiliation-title: "University of Utah"
+date: last-modified
+title-block-style: default
+title-block-banner: '#890000'
+format: 
+  html:
+      embed-resources: true
+      theme: flatly
+      code-block-bg: true
+      code-block-border-left: "#31BAE9"
+      highlight-style: printing
+execute:
+    message: false
+    warning: false
+    error: false
+---
+
+```{r r-setup}
+#| echo: false
+library(tidyverse)
+library(nycflights13)
+flights <- nycflights13::flights
+avg_delays <- flights |>
+	group_by(carrier) |>
+	summarise(avg_delay=mean(dep_delay,na.rm=T))
+flights_by_month <- flights |>
+	mutate(dt=as.Date(format(time_hour,'%Y-%m-01'))) |>
+	group_by(carrier,dt) |>
+	summarise(num_flights=n(),.groups='drop')
+```
+
+## Chart 1
+
+```{r chart1}
+```
+
+## Chart 2
+```{r chart2}
+```
