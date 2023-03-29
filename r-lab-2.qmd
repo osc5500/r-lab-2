@@ -27,7 +27,7 @@ library(here)
 
 # Introduction to ggplot2
 
-“ggplot()” is the generic function call. A plot can include any of the following objects.
+`ggplot()` is the generic function call. A plot can include any of the following objects.
 
 * `ggplot` - the primary building block of a chart. By itself only generates a blank chart.
 * `aes` - short for 'aesthetic mapping'. This function tells the plot how to map data to different portions of the chart (e.g. x-axis,y-axis,fill,etc.)
@@ -37,7 +37,7 @@ library(here)
     * `geom_line` - line chart
 * `labs` - chart labels and titles
 * `coord` - functions to modify the coordinate space. The most commonly used is `coord_flip` to rotate a chart 90 degrees.
-* `facet` - these control how many charts are shown. We will cover these in more detail in the next lab.
+* `facet` - these control how many charts are shown. 
 * `theme` - functions to modify the overall look and feel over the chart.
 
 The great thing about ggplot is that it allows you to control nearly every aspect of a data visualization. Because there is so much control,there is also a learning curve associated with that level of control.
@@ -52,6 +52,18 @@ In this example,we have a basic `ggplot` call with data and aesthetic mappings i
 ggplot(mtcars,aes(x = wt,y = mpg)) +
     geom_point()
 ```
+
+What happens if we don't add a geometric object?
+```{r scatter-no-geom}
+ggplot(mtcars,aes(x = wt,y = mpg)) 
+```
+
+As you can see, we get a blank chart. What happens if we just call `ggplot` by itself?
+```{r just-ggplot}
+ggplot() 
+```
+
+The point being, that we start with a blank slate. We add data, add aesthetic mappings and add geometric objects to create a chart. We can customize the chart more by adding labels, scales and themes. These will be covered later in the lab.
 
 ### heightweight | height vs. age  
 Now we'll work with another data set that provides information on heigt and weight.
@@ -120,12 +132,14 @@ As mentioned, nearly all of the chart can be customized using `ggplot`. We will 
 First, we'll cover the `labs` function. This function allows you to add labels to a chart. For an example, we will go back to our height/weight data and will add labels to the scatterplot. These are the main labels that can be added to a chart. Labels can be added to the content of the chart via a geometric object (not covered here).
 
 ```{r hw3-labs}
-ggplot(df.heightweight) +  
+base_df_plot <- ggplot(df.heightweight) +  
 	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
 	labs(x='Age (Years)',y='Height (In)',colour='Sex',
 		 title='Height Increases with Age',
 		 subtitle='This is a subtitle',
 		 caption='This is a caption')
+
+base_df_plot
 ```
 
 ### Themes
@@ -135,36 +149,21 @@ We can also control the overall look and feel of the chart with `theme` function
 `theme_bw`
 
 ```{r hw3-bw}
-ggplot(df.heightweight) +  
-	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
-	labs(x='Age (Years)',y='Height (In)',colour='Sex',
-		 title='Height Increases with Age',
-		 subtitle='This is a subtitle',
-		 caption='This is a caption') +
+base_df_plot +
 	theme_bw()
 ```
 
 `theme_classic`
 
 ```{r hw3-classic}
-ggplot(df.heightweight) +  
-	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
-	labs(x='Age (Years)',y='Height (In)',colour='Sex',
-		 title='Height Increases with Age',
-		 subtitle='This is a subtitle',
-		 caption='This is a caption') +
+base_df_plot +
 	theme_classic()
 ```
 
 `theme_void`
 
 ```{r hw3-void}
-ggplot(df.heightweight) +  
-	geom_point(aes(x = ageYear,y = heightIn,colour = sex)) +
-	labs(x='Age (Years)',y='Height (In)',colour='Sex',
-		 title='Height Increases with Age',
-		 subtitle='This is a subtitle',
-		 caption='This is a caption') +
+base_df_plot +
 	theme_void()
 ```
 
