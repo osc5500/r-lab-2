@@ -39,6 +39,5 @@ vignettes/*.pdf
 .Renviron
 
 *.Rproj
-*_files/
 *.html
 .DS_Store
